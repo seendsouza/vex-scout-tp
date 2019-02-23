@@ -3,12 +3,10 @@ import os
 import click
 import pprint
 import statistics
+import math
 
-def is_empty(lis1): 
-    if len(lis1) == 0: 
-        return 0
-    else: 
-        return 1
+import helper
+
 
 def extract_json_data():
     """
@@ -30,33 +28,6 @@ def extract_json_data():
             team_data[team_number] = json.load(team_file)
     return team_data
 
-def prune_data(original_data):
-    """
-    Deletes empty statistics from dictionary
-    Returns cleaner and shortened dictionary
-    """
-    # TODO: FIX THIS SO IT DOESN'T DELETE THE WHOLE DICT
-    with open('../config.json') as f:
-        config_data = json.load(f)
-
-    first_level_stats = config_data["first_level_stats"]
-    second_level_stats = config_data["second_level_stats"]
-    third_level_stats = config_data["third_level_stats"]
-    empty_counter = 0
-
-    for _, team in enumerate(list(original_data.keys())):
-        for __, data in enumerate(list(original_data[team].keys())):
-            if data in first_level_stats:
-                if is_empty(original_data[team][data]):
-                    original_data[team].pop(data, None)
-            elif data in second_level_stats:
-                if is_empty(original_data[team][data]):
-                    original_data[team].pop(data, None)
-
-        if is_empty(original_data[team]):
-            original_data.pop(team, None)
-
-    return original_data
 
 def calculate_data(original_data):
     """
@@ -68,6 +39,49 @@ def calculate_data(original_data):
     In total
     Average points per match (calculated based on successful shots and cap flips)
     """
+    seconds_per_minute = 60
+    for _, team in enumerate(original_data):
+        # Drive Speed
+        diameter_of_omni = float(original_data[team]["drive_wheel_diameter"])
+        rpm = float(original_data[team]["drive_rpm"])
+        vel_in_per_sec = ((math.pi * diameter_of_omni) * rpm ) / seconds_per_minute 
+        original_data[team]["vel_in_per_sec"] = vel_in_per_sec
+
+        if original_data[team]["shot_accuracy"][0] != ["",""]:
+            # Shot Accuracy
+            hit_list = list()
+            shit_list = list()
+            for game in original_data[team]["shot_accuracy"]:
+                print(game)
+                hit_list.append(game[0])
+                shit_list.append(game[1])
+                succ_shot_percentage = [int(hit_list[i])/(int(shit_list[i])+int(hit_list[i])) for i,attempt in enumerate(hit_list)]
+                original_data[team]["shot_accuracy_percent"] = succ_shot_percentage
+                original_data[team]["shot_accuracy_percent_avg"] = statistics.mean(succ_shot_percentage)
+
+            # Cap Flip Accuracy
+        if original_data[team]["cap_flip_accuracy"][0] != ["",""]:
+            hit_list = list()
+            shit_list = list()
+            for game in original_data[team]["cap_flip_accuracy"]:
+                hit_list.append(game[0])
+                shit_list.append(game[1])
+                succ_cap_flip_percentage = [int(hit_list[i])/(int(shit_list[i])+int(hit_list[i])) for i,attempt in enumerate(hit_list)]
+                original_data[team]["cap_flip_accuracy_percent"] = succ_cap_flip_percentage
+                original_data[team]["cap_flip_accuracy_percent_avg"] = statistics.mean(succ_cap_flip_percentage)
+
+            # Cap Post Accuracy
+        if original_data[team]["cap_post_accuracy"][0] != ["",""]:
+            hit_list = list()
+            shit_list = list()
+            for game in original_data[team]["cap_post_accuracy"]:
+                hit_list.append(game[0])
+                shit_list.append(game[1])
+                succ_cap_post_percentage = [int(hit_list[i])/(int(shit_list[i])+int(hit_list[i])) for i,shot in enumerate(hit_list)]
+                original_data[team]["cap_post_accuracy_percent"] = succ_cap_post_percentage
+                original_data[team]["cap_post_accuracy_percent_avg"] = statistics.mean(succ_cap_post_percentage)
+
+        #TODO: Average points per match
     return original_data
 
 def sorted_stat(team_data, stat):
@@ -94,7 +108,8 @@ def show_all_data(ctx, param, value):
     if not value or ctx.resilient_parsing:
     	return
     team_data = extract_json_data()
-    pprint.pprint(team_data)
+    new_data = calculate_data(team_data)
+    pprint.pprint(new_data)
     ctx.exit()
 
 @click.group()
