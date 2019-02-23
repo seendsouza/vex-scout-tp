@@ -1,3 +1,15 @@
 {
-    "test": "0"
+    "system_version": "v5",
+    "no_of_drive_motors": "6",
+    "drive_wheel_diameter": "4",
+    "drive_rpm": "200",
+    "lift_type": "non-linear",
+    "lift_velocity": "slow",
+    "robot_rating": ["5", "4", "5"],
+    "driver_rating": ["5", "4", "5"],
+    "autonomous_rating": ["1", "2", "1"],
+    "intake_times": ["1", "2", "0.5"],
+    "shot_accuracy": [["",""]],
+    "cap_flip_accuracy": [["5","0"],["4","1"]],
+    "cap_post_accuracy": [["1","1"],["2","1"]]
 }

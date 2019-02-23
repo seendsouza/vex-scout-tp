@@ -1,3 +1,15 @@
 {
-    "test": "1"
+    "system_version": "cortex",
+    "no_of_drive_motors": "4",
+    "drive_wheel_diameter": "4",
+    "drive_rpm": "150",
+    "lift_type": "",
+    "lift_velocity": "",
+    "robot_rating": ["5", "4", "5"],
+    "driver_rating": ["5", "4", "5"],
+    "autonomous_rating": ["1", "2", "1"],
+    "intake_times": ["1", "2", "0.5"],
+    "shot_accuracy": [["5","2"]],
+    "cap_flip_accuracy": [["4","0"],["6","1"]],
+    "cap_post_accuracy": [["",""]]
 }

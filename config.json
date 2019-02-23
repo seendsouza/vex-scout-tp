@@ -1,3 +1,8 @@
 {
-    "input_folder_path": "../data"
+    "input_folder_path": "../data",
+
+    "first_level_stats": ["system_version", "no_of_drive_motors", "drive_wheel_diameter", "drive_rpm", "lift_type", "lift_velocity"],
+    "second_level_stats": ["robot_rating", "driver_rating", "autonomous_rating", "intake_times"],
+    "third_level_stats": ["shot_accuracy", "cap_flip_accuracy", "cap_post_accuracy"],
+    "custom_stats": ["shooting_positions", "autonomous_paths", "types_of_scorers"]
 }
